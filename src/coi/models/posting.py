@@ -15,7 +15,6 @@ from pydantic import (
 
 from coi.models.enums import (
     EmploymentType,
-    PostingStatus,
     SalaryPeriod,
     WorkplaceType,
 )
@@ -38,14 +37,6 @@ class JobPosting(BaseModel):
         min_length=1,
         description="Identifier of the source that published the posting.",
     )
-    external_id: str | None = Field(
-        default=None,
-        description="Source-specific identifier for the posting.",
-    )
-    opportunity_id: UUID | None = Field(
-        default=None,
-        description="Identifier of the associated canonical job opportunity.",
-    )
 
     # Basic information
     title: str = Field(
@@ -56,9 +47,10 @@ class JobPosting(BaseModel):
         min_length=1,
         description="Name of the hiring organization.",
     )
-    description: str | None = Field(
+    content: str | None = Field(
         default=None,
-        description="Short description or summary of the job posting.",
+        min_length=1,
+        description="Full text content of the job posting.",
     )
 
     # Location and employment
@@ -108,13 +100,20 @@ class JobPosting(BaseModel):
         description="Maximum expected working hours per week.",
     )
 
-    # URLs
+    # Application information
+    applicant_count: int | None = Field(
+        default=None,
+        ge=0,
+        description="Number of applicants reported by the source.",
+    )
+    is_reposted: bool | None = Field(
+        default=None,
+        description="Whether the source identifies the posting as reposted.",
+    )
+
+    # URL
     url: HttpUrl = Field(
         description="Original URL of the job posting.",
-    )
-    canonical_url: HttpUrl | None = Field(
-        default=None,
-        description="Normalized URL used for deduplication.",
     )
 
     # Dates
@@ -130,16 +129,8 @@ class JobPosting(BaseModel):
         default_factory=lambda: datetime.now(UTC),
         description="Timestamp when the posting was first collected.",
     )
-    last_seen_at: AwareDatetime = Field(
-        default_factory=lambda: datetime.now(UTC),
-        description="Timestamp when the posting was most recently observed.",
-    )
 
-    # Status and language
-    status: PostingStatus = Field(
-        default=PostingStatus.UNKNOWN,
-        description="Current availability status of the posting.",
-    )
+    # Language
     language: str | None = Field(
         default=None,
         description="Language of the job posting, preferably a BCP 47 tag.",
@@ -162,8 +153,5 @@ class JobPosting(BaseModel):
             and self.hours_per_week_min > self.hours_per_week_max
         ):
             raise ValueError("hours_per_week_min cannot exceed hours_per_week_max")
-
-        if self.last_seen_at < self.first_seen_at:
-            raise ValueError("last_seen_at cannot precede first_seen_at")
 
         return self

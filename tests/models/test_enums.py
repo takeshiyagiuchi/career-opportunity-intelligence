@@ -2,8 +2,6 @@ import pytest
 
 from coi.models.enums import (
     EmploymentType,
-    ExtractionStatus,
-    PostingStatus,
     SalaryPeriod,
     SourceType,
     WorkplaceType,
@@ -16,8 +14,6 @@ from coi.models.enums import (
         (SourceType, "api"),
         (EmploymentType, "full_time"),
         (WorkplaceType, "remote"),
-        (PostingStatus, "active"),
-        (ExtractionStatus, "success"),
         (SalaryPeriod, "annual"),
     ],
 )

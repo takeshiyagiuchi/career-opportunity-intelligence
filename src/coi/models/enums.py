@@ -33,25 +33,6 @@ class WorkplaceType(StrEnum):
     UNSPECIFIED = "unspecified"
 
 
-class PostingStatus(StrEnum):
-    """Availability status of a job posting."""
-
-    ACTIVE = "active"
-    EXPIRED = "expired"
-    REMOVED = "removed"
-    UNKNOWN = "unknown"
-
-
-class ExtractionStatus(StrEnum):
-    """Status of full-text content extraction."""
-
-    NOT_ATTEMPTED = "not_attempted"
-    SUCCESS = "success"
-    UNAVAILABLE = "unavailable"
-    RESTRICTED = "restricted"
-    FAILED = "failed"
-
-
 class SalaryPeriod(StrEnum):
     """Payment frequency associated with a salary."""
 
