@@ -35,3 +35,11 @@ def test_swagger_documentation() -> None:
     response = client.get("/docs")
 
     assert response.status_code == 200
+
+
+def test_v1_router_is_registered() -> None:
+    """Test that the versioned API router is registered."""
+
+    paths = app.openapi()["paths"]
+
+    assert "/health" in paths
